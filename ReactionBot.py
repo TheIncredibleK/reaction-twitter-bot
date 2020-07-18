@@ -94,9 +94,14 @@ def find_image(search_param, username):
     filename = join(dl_location, onlyfiles[0])
     return filename
 
+def main_loop():
+    while True:
+        a = 1
+    return
 
 if __name__ == "__main__":
     streamListener = StreamListener()
     myStream = tweepy.Stream(auth=API.auth, listener=StreamListener())
     print("ONLINE: ")
     myStream.filter(track=['@reactor_bot '])
+    main_loop()
