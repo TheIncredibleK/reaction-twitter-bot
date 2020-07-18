@@ -7,7 +7,6 @@ import tweepy
 import re
 from google_images_search import GoogleImagesSearch
 
-
 #creds
 API_KEY = environ["API_KEY"]
 API_SHH_KEY = environ["API_SHH_KEY"]
@@ -16,13 +15,12 @@ ACCESS_SECRET = environ["ACCESS_SECRET"]
 
 GOOGL_DEV_API_KEY = environ["GOOGL_DEV_API_KEY"]
 CX_API_KEY = environ["CX_API_KEY"]
+
+
 consumer_key = API_KEY
 consumer_secret = API_SHH_KEY
 access_token = ACCESS
 access_token_secret = ACCESS_SECRET
-
-
-
 # OAuth process, using the keys and tokens
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -37,10 +35,7 @@ class StreamListener(tweepy.StreamListener):
 
 ## Twitter Helpers ##
 def __resolve_tweet_to_respond_to(tweet):
-    if (tweet.in_reply_to_status_id_str != None):
-        return tweet.in_reply_to_status_id_str, True
-    else:
-        return tweet.id, False
+    return tweet.id, True
 
 def process_tweet(tweet, api):
 
@@ -59,7 +54,7 @@ def reply_with_image(api, image_path, username, include_username, tweet_id):
     if include_username:
         response_text += "@{}".format(username)
 
-    print("Path: {}\n Username:{}\n, tweet_id{}\n".format(image_path, username, tweet_id))
+    print("Path: {}\n Username:{}\n, tweet_id:{}\n".format(image_path, username, tweet_id))
     api.update_with_media(filename=image_path, status=response_text, in_reply_to_status_id=tweet_id)
     __remove_file(image_path)
 
