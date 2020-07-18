@@ -1,3 +1,2 @@
 Google-Images-Search
-windows-curses
 tweepy
