@@ -8,6 +8,7 @@ import re
 from google_images_search import GoogleImagesSearch
 
 #creds
+
 API_KEY = environ["API_KEY"]
 API_SHH_KEY = environ["API_SHH_KEY"]
 ACCESS = environ["ACCESS"]
@@ -34,28 +35,28 @@ class StreamListener(tweepy.StreamListener):
 
 
 ## Twitter Helpers ##
-def __resolve_tweet_to_respond_to(tweet):
-    return tweet.id, True
+def __resolve_responding_to(tweet):
+    if(tweet.in_reply_to_screen_name !=None):
+        return "@{} @{}".format(tweet.author.screen_name, tweet.in_reply_to_screen_name)
+    else:
+        return "@{}".format(tweet.author.screen_name)
 
 def process_tweet(tweet, api):
-
-    tweet_id, include_username = __resolve_tweet_to_respond_to(tweet)
+    tweet_id = tweet.id
+    response_text = __resolve_responding_to(tweet)
     username = tweet.author.screen_name
     text = re.sub('@[^\s]+','',tweet.text.lower())
 
     if(username != MY_NAME):
         image_path = find_image(text, username)
-        reply_with_image(api, image_path, username, include_username, tweet_id)
+        reply_with_image(api, image_path, username, tweet_id, response_text)
+        return
     else:
         print("Not doing it for myself you dingus")
 
-def reply_with_image(api, image_path, username, include_username, tweet_id):
-    response_text = ""
-    if include_username:
-        response_text += "@{}".format(username)
-
+def reply_with_image(api, image_path, username, tweet_id, beginning_of_tweet):
     print("Path: {}\n Username:{}\n, tweet_id:{}\n".format(image_path, username, tweet_id))
-    api.update_with_media(filename=image_path, status=response_text, in_reply_to_status_id=tweet_id)
+    api.update_with_media(filename=image_path, status=beginning_of_tweet, in_reply_to_status_id=tweet_id)
     __remove_file(image_path)
 
 
